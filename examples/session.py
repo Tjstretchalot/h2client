@@ -3,7 +3,7 @@ https://www.postman.com/. h2client is not in any way affiliated with or
 endorsed by Postman.
 """
 import asyncio
-from h2client import Session
+from h2client.session import Session
 import json
 
 
