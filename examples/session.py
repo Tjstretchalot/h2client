@@ -21,7 +21,7 @@ async def main():
 
     async with client.conn() as conn:
         responses = await asyncio.gather(
-            conn.get('/get', params={'foo1': 'bar1'}),
+            conn.get('/get', params={'foo1': 'bar1', 'foo2': '1 2 3'}),
             conn.post('/post', json={'payload': 'asdf'}),
             conn.delete('/delete', data=b'look some data!', headers={
                 'content-type': 'text/plain'

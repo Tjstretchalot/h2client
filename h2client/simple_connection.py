@@ -35,6 +35,7 @@ print(test_revalidate_result.json())
 from .http2_connection import HTTP2Connection
 from .diskcached_connection import DiskcachedConnection
 from httpx import Headers
+from urllib.parse import urlencode
 import codecs
 import json as jsonlib
 import io
@@ -276,6 +277,12 @@ class SimpleConnection:
         - `response (ResponseData)`: The result from the server, fully loaded
           in memory.
         """
+        if params is not None:
+            base_path, _, current_args = path.partition('?')
+            query_args = dict(arg.split('=') for arg in current_args.split('&') if arg)
+            query_args = {**query_args, **params}
+            path = base_path + '?' + urlencode(query_args)
+
         content_type_hint = None
         if json is not None:
             data = jsonlib.dumps(json)
