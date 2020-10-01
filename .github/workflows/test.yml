@@ -1,0 +1,24 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test_migrations:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version: [3.8]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Python ${{ matrix.python_version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python_version }}
+    - name: Install python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82,F841,E302,E303,F401,E261 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
