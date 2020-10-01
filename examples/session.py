@@ -7,7 +7,7 @@ from h2client import Session
 import json
 
 
-USER_AGENT ='H2ClientExamples/1 by /u/Tjstretchalot (+https://github.com/tjstretchalot/h2client)'
+USER_AGENT = 'H2ClientExamples/1 by /u/Tjstretchalot (+https://github.com/tjstretchalot/h2client)'
 
 
 async def main():
@@ -29,7 +29,6 @@ async def main():
         )
 
     for response in responses:
-        response: ResponseData
         print(f'{response.method} {response.path} - {response.status_code} {response.status_text}')
         print('Request Headers:')
         for key, val in response.request_headers.items():

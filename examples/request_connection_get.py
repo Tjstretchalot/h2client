@@ -7,6 +7,7 @@ import io
 
 USER_AGENT = 'H2ClientExamples/1 by /u/Tjstretchalot (+https://github.com/tjstretchalot/h2client)'
 
+
 async def main():
     rconn = RequestConnection(StreamConnection(Connection()))
 

@@ -1,7 +1,6 @@
 import asyncio
 from h2client.diskcached_connection import DiskcachedConnection
 import io
-import json
 import time
 
 
