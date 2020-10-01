@@ -324,6 +324,6 @@ class SimpleConnection:
     async def __aenter__(self):
         return self
 
-    async def __aexit__(self, exc_type, exc, tb):
+    async def __aexit__(self, exc_type=None, exc=None, tb=None):
         await self.close()
-        return exc_type is not None
+        return False
