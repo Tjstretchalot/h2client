@@ -14,6 +14,7 @@ import io
 import typing
 import asyncio
 
+
 class HTTP2Connection:
     """Wraps a RequestConnection in standard http semantics without any higher
     level interpretation logic. This is a pretty good checkpoint in that the

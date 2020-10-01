@@ -13,8 +13,10 @@ import os
 INFO_EVENTS = (
     h2.events.RemoteSettingsChanged,
     h2.events.ChangedSetting,
-    h2.events.InformationalResponseReceived
+    h2.events.InformationalResponseReceived,
+    h2.events.WindowUpdated
 )
+
 
 class UnsupportedProtocolException(Exception):
     """Raised when the server responds with valid http/2 but we don't know how
@@ -164,7 +166,7 @@ class RequestConnection:
 
         self.sconn.write_new_data()
 
-    async def _read_event_on_stream_ignore_info(self, stream_id, ignore_window_update=True):
+    async def _read_event_on_stream_ignore_info(self, stream_id):
         while True:
             tasks = [
                 asyncio.Task(self.sconn.read_event_on_stream(stream_id)),
@@ -187,14 +189,6 @@ class RequestConnection:
             self.sconn.write_new_data()
 
             if isinstance(event, INFO_EVENTS):
-                continue
-
-            if ignore_window_update and isinstance(event, h2.events.WindowUpdated):
-                event: h2.events.WindowUpdated
-                h2_conn = self.sconn.conn.h2_conn
-                window_size = h2_conn.local_flow_control_window(stream_id)
-                max_frame_size = h2_conn.max_outbound_frame_size
-
                 continue
 
             return event

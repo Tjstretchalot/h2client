@@ -9,7 +9,6 @@ import h2.events
 import h2.connection
 import ssl
 import certifi
-import random
 from collections import deque
 
 
@@ -156,8 +155,9 @@ class Connection:
                 self._events.append(evnt)
 
             frame_length = int.from_bytes(frame_length_bytes, 'big', signed=False)
+            # 6 more frame header bytes
             tasks = [
-                asyncio.Task(self.reader.readexactly(frame_length + 6)),  # 6 more frame header bytes
+                asyncio.Task(self.reader.readexactly(frame_length + 6)),
                 asyncio.Task(self._close_lock.acquire())
             ]
             try:
@@ -210,7 +210,6 @@ class Connection:
             self._close_lock.release()
         else:
             tasks[1].cancel()
-
 
     async def close(self):
         """Close the underlying connection and cleanup.

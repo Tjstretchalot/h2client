@@ -3,6 +3,7 @@ host and settings.
 """
 from .simple_connection import SimpleConnection
 
+
 class Session:
     """This object is a convenience tool to initialize many simple connections
     with the same settings.

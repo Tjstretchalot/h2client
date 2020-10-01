@@ -78,9 +78,6 @@ class DiskcachedConnection:
         """
         return self.h2conn.host
 
-    async def open():
-        await self.h2conn.open()
-
     async def finish_revalidations(self):
         if not self.revalidation_tasks:
             return
@@ -123,7 +120,7 @@ class DiskcachedConnection:
 
         if 'no-store' in request_directives:
             if only_if_cached:
-                return _only_if_cached_failure(method, path, headers, result_body, body)
+                return self._only_if_cached_failure(method, path, headers, result_body, body)
 
             return await self._no_store_request(
                 method, path, headers, result_body, body
@@ -131,7 +128,7 @@ class DiskcachedConnection:
 
         if 'no-cache' in request_directives:
             if only_if_cached:
-                return _only_if_cached_failure(method, path, headers, result_body, body)
+                return self._only_if_cached_failure(method, path, headers, result_body, body)
 
             return await self._no_cache_request(
                 method, path, headers, result_body, body
@@ -141,7 +138,7 @@ class DiskcachedConnection:
 
         if cached_at is None:
             if only_if_cached:
-                return _only_if_cached_failure(method, path, headers, result_body, body)
+                return self._only_if_cached_failure(method, path, headers, result_body, body)
 
             return await self._no_cache_request(
                 method, path, headers, result_body, body
@@ -189,7 +186,7 @@ class DiskcachedConnection:
             return cached_headers
 
         if only_if_cached:
-            return _only_if_cached_failure(method, path, headers, result_body, body)
+            return self._only_if_cached_failure(method, path, headers, result_body, body)
 
         mem_body = io.BytesIO()
         real_result_headers = await self._no_cache_request(method, path, headers, mem_body, body)
@@ -220,7 +217,6 @@ class DiskcachedConnection:
         await self.h2conn.close()
 
     async def _no_cache_request(self, method, path, headers, result_body: io.BytesIO, body):
-        cache_key = self._cache_key(method, path)
         mem_result_body = io.BytesIO()
         response_headers = await self.h2conn.request(method, path, headers, mem_result_body, body)
         result_body.write(mem_result_body.getvalue())
@@ -251,7 +247,6 @@ class DiskcachedConnection:
 
     def _store_request(
             self, method, path, response_headers, result_body, cached_at=None):
-        directives = self._get_cache_directives(response_headers)
         cache_key = self._cache_key(method, path)
         with self.cache.transact():
             self.cache.set(cache_key + b'-cached-at', cached_at or time.time())
@@ -281,8 +276,10 @@ class DiskcachedConnection:
     def _revalidate_request(self, method, path, headers, body):
         result_body = io.BytesIO()
         task = asyncio.Task(self._no_cache_request(method, path, headers, result_body, body))
+
         def on_task_done(tsk):
             self.revalidation_tasks.remove(tsk)
+
         task.add_done_callback(on_task_done)
         self.revalidation_tasks.append(task)
         asyncio.ensure_future(task)
