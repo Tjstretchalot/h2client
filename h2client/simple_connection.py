@@ -150,6 +150,9 @@ class ResponseData:
     @property
     def status_code(self) -> int:
         """Fetch the status code from the response as an integer"""
+        if ':status' not in self.headers:
+            return 0
+
         return int(self.headers[':status'])
 
     @property
