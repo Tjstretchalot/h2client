@@ -127,6 +127,12 @@ class RequestConnection:
             self.sconn.write_new_data()
 
         event = await self._read_event_on_stream_ignore_info(stream_id)
+        if isinstance(event, h2.events.StreamEnded):
+            yield []
+            yield None
+            yield None
+            return
+
         if not isinstance(event, h2.events.ResponseReceived):
             raise UnsupportedProtocolException(
                 f'expected ResponseReceived, got {event}, a {type(event)}'
