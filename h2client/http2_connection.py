@@ -115,7 +115,7 @@ class HTTP2Connection:
         """See `h2client.connection.Connection#open`"""
         async with self._open_lock:
             if self.rconn.sconn.conn.reader is None:
-                await self.rconn.sconn.conn.open(self.host)
+                await self.rconn.open(self.host)
             self.opened = True
 
     async def drain(self):
