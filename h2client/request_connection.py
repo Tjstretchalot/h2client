@@ -199,9 +199,9 @@ class RequestConnection:
 
             return event
 
-    async def open(self):
+    async def open(self, host):
         """See h2client.connection.Connection.open"""
-        await self.sconn.open()
+        await self.sconn.open(host)
 
     async def drain(self):
         """See h2client.connection.Connection.drain"""

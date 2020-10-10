@@ -75,11 +75,11 @@ class StreamConnection:
         """See h2client.connection.Connection#read"""
         await self.conn.read(*args, **kwargs)
 
-    async def open(self):
+    async def open(self, host):
         """See h2client.connection.Connection#open"""
         self.events_by_stream = {}
         self._open_counter += 1
-        await self.conn.open()
+        await self.conn.open(host)
 
     async def drain(self):
         """See h2client.connection.Connection#drain"""
