@@ -288,7 +288,7 @@ class SimpleConnection:
 
         content_type_hint = None
         if json is not None:
-            data = jsonlib.dumps(json)
+            data = jsonlib.dumps(json).encode('utf-8')
             content_type_hint = 'application/json; charset=utf-8'
 
         if isinstance(data, str) and content_type_hint is None:
