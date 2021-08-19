@@ -250,7 +250,7 @@ class DiskcachedConnection:
         cache_key = self._cache_key(method, path)
         with self.cache.transact():
             self.cache.set(cache_key + b'-cached-at', cached_at or time.time())
-            self.cache.set(cache_key + b'-header', response_headers._list)
+            self.cache.set(cache_key + b'-header', response_headers.multi_items())
             self.cache.set(cache_key + b'-body', result_body)
 
     def _fetch_stored_request(self, method, path):

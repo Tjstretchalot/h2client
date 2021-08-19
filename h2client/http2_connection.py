@@ -94,7 +94,7 @@ class HTTP2Connection:
         if not isinstance(headers, Headers):
             headers = Headers(headers)
 
-        itr = self.rconn.request(method, self.host, path, headers._list, body)
+        itr = self.rconn.request(method, self.host, path, headers.multi_items(), body)
 
         raw_headers = await itr.__anext__()
         response_headers = Headers(raw_headers)
