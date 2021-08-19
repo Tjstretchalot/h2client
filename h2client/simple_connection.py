@@ -312,7 +312,7 @@ class SimpleConnection:
             self.h2conn.host,
             path,
             method,
-            headers,
+            Headers(headers),
             response_headers,
             result_body.getvalue()
         )
